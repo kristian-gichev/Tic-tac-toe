@@ -1,4 +1,5 @@
 import PlayerList from "./components/PlayerList";
+import GameBoard from "./components/GameBoard";
 import { PLAYERS } from "./data";
 
 export default function App() {
@@ -7,7 +8,7 @@ export default function App() {
       <main>
         <div id="game-container">
           <PlayerList id="players" players={PLAYERS}></PlayerList>
-          Game board
+          <GameBoard></GameBoard>
         </div>
       </main>
       Move list
