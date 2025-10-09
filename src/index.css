@@ -190,6 +190,23 @@ ol {
   padding: 1rem;
 }
 
+#board-size-input {
+  width: 6rem;
+  font: inherit;
+  font-size: 2rem;
+  text-align: center;
+  border: none;
+  padding: 0.25rem;
+  margin-left: 0.5rem;
+  background-color: #46432f;
+  color: #e1dec7;
+}
+
+#board-size-label{
+  font-size: 1.2rem;
+  color: #c3ba78;
+}
+
 #game-over {
   position: absolute;
   top: 0;

@@ -4,6 +4,7 @@ import { PLAYERS } from "../data";
 
 function checkLongestSequenceAllDirections(b) {
     const boardSize = b.length;
+    const neededToWin = 3 + Math.floor((boardSize - 3) / 2);
     let maxSequence = 0;
     const directions = [
         { dr: 0, dc: 1 },   // Horizontal
@@ -19,7 +20,7 @@ function checkLongestSequenceAllDirections(b) {
                     let length = 1;
                     let nr = r + dr;
                     let nc = c + dc;
-                    while (nr >= 0 && nr < boardSize && nc >= 0 && nc < boardSize && b[nr][nc] === currentPlayer.symbol) {
+                    while (length < neededToWin && nr >= 0 && nr < boardSize && nc >= 0 && nc < boardSize && b[nr][nc] === currentPlayer.symbol) {
                         length++;
                         nr += dr;
                         nc += dc;
@@ -44,7 +45,6 @@ function checkWinner(b) {
 
 export default function GameBoard() {
     const [boardSize, setBoardSize] = useState(3); // Default board size is 3x3
-    const neededToWin = 3 + Math.floor((boardSize - 3) / 2);
     const emptyBoard = Array(boardSize).fill(Array(boardSize).fill(null));
     const [board, setBoard] = useState(emptyBoard);
     const [currentPlayer, setCurrentPlayer] = useState(PLAYERS.player1);
@@ -52,8 +52,6 @@ export default function GameBoard() {
     function changePlayer() {
         setCurrentPlayer(currentPlayer === PLAYERS.player1 ? PLAYERS.player2 : PLAYERS.player1);
     }
-
-
 
     function updateBoard(r, c) {
         const newBoard = board.map((row, rIdx) =>
@@ -88,7 +86,8 @@ export default function GameBoard() {
 
     return (
         <>
-            <input type="number" min="3" max="8" value={boardSize} onChange={(e) => {
+            <label id="board-size-label" htmlFor="board-size-input">Board Size (3-8): </label>
+            <input id="board-size-input"  type="number" min="3" max="8" value={boardSize} onChange={(e) => {
                 const newSize = Math.max(3, Math.min(8, parseInt(e.target.value) || 3));
                 setBoardSize(newSize);
                 setBoard(Array(newSize).fill(Array(newSize).fill(null)));
