@@ -12,20 +12,22 @@ function checkLongestSequenceAllDirections(b) {
         { dr: 1, dc: 1 },   // Diagonal /
         { dr: 1, dc: -1 }   // Diagonal \
     ];
-
-    for (let r = 0; r < boardSize; r++) {
-        for (let c = 0; c < boardSize; c++) {
-            if (b[r][c] === currentPlayer.symbol) {
-                for (let { dr, dc } of directions) {
-                    let length = 1;
-                    let nr = r + dr;
-                    let nc = c + dc;
-                    while (length < neededToWin && nr >= 0 && nr < boardSize && nc >= 0 && nc < boardSize && b[nr][nc] === currentPlayer.symbol) {
-                        length++;
-                        nr += dr;
-                        nc += dc;
+    const symbols = [PLAYERS.player1.symbol, PLAYERS.player2.symbol];
+    for (let symbol of symbols) {
+        for (let r = 0; r < boardSize; r++) {
+            for (let c = 0; c < boardSize; c++) {
+                if (b[r][c] === symbol) {
+                    for (let { dr, dc } of directions) {
+                        let length = 1;
+                        let nr = r + dr;
+                        let nc = c + dc;
+                        while (length < neededToWin && nr >= 0 && nr < boardSize && nc >= 0 && nc < boardSize && b[nr][nc] === symbol) {
+                            length++;
+                            nr += dr;
+                            nc += dc;
+                        }
+                        maxSequence = Math.max(maxSequence, length);
                     }
-                    maxSequence = Math.max(maxSequence, length);
                 }
             }
         }
@@ -46,13 +48,15 @@ function checkWinner(b) {
 export default function GameBoard() {
     const [boardSize, setBoardSize] = useState(3); // Default board size is 3x3
     const emptyBoard = Array(boardSize).fill(Array(boardSize).fill(null));
-    const [board, setBoard] = useState(emptyBoard);
-    const [currentPlayer, setCurrentPlayer] = useState(PLAYERS.player1);
-
+    const [board, setBoard] = useState(emptyBoard); // Create 2D array for the board
+    const [currentPlayer, setCurrentPlayer] = useState(PLAYERS.player1); // Manage turns. Player 1 starts the first game.
+    
+    // Alternates state between players
     function changePlayer() {
         setCurrentPlayer(currentPlayer === PLAYERS.player1 ? PLAYERS.player2 : PLAYERS.player1);
     }
-
+    
+    // Updates the board state immutably
     function updateBoard(r, c) {
         const newBoard = board.map((row, rIdx) =>
             row.map((cell, cIdx) => {
@@ -67,21 +71,25 @@ export default function GameBoard() {
     }
 
     function handleCellClick(rowIndex, cellIndex) {
+        // Ignore clicks on occupied cells
         if (board[rowIndex][cellIndex] !== null) {
             alert("Cell already occupied");
             return;
         }
 
+        // Compute the new board state
         const newBoard = updateBoard(rowIndex, cellIndex);
 
+        // Check for a winner
         if (checkWinner(newBoard)) {
-            alert(`${currentPlayer.name} wins!`);
-            setBoard(emptyBoard);
-            changePlayer();
+            alert(`${currentPlayer.name} wins!`); // Announce the winner
+            setBoard(emptyBoard); // Reset the board
+            changePlayer(); // Loser starts next game
             return;
         }
 
-        changePlayer();
+        // Pass the turn to the other player
+        changePlayer(); 
     }
 
     return (
@@ -89,9 +97,9 @@ export default function GameBoard() {
             <label id="board-size-label" htmlFor="board-size-input">Board Size (3-8): </label>
             <input id="board-size-input"  type="number" min="3" max="8" value={boardSize} onChange={(e) => {
                 const newSize = Math.max(3, Math.min(8, parseInt(e.target.value) || 3));
-                setBoardSize(newSize);
-                setBoard(Array(newSize).fill(Array(newSize).fill(null)));
-                setCurrentPlayer(PLAYERS.player1);
+                setBoardSize(newSize); // Update state with new size
+                setBoard(Array(newSize).fill(Array(newSize).fill(null))); // Reset board
+                setCurrentPlayer(PLAYERS.player1); // Player 1 starts after board size change
             }} />
             <ol id="game-board">
                 {board.map((row, rowIndex) => (
