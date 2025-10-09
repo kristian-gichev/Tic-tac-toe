@@ -1,10 +1,16 @@
+import PlayerList from "./components/PlayerList";
+import { PLAYERS } from "./data";
 
-function App() {
-  
-
+export default function App() {
   return (
-    <p>Coming soon...</p>
+    <>
+      <main>
+        <div id="game-container">
+          <PlayerList id="players" players={PLAYERS}></PlayerList>
+          Game board
+        </div>
+      </main>
+      Move list
+    </>
   )
-}
-
-export default App
+};
