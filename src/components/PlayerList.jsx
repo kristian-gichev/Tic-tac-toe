@@ -1,11 +1,11 @@
 import PlayerData from "./PlayerData";
 
-export default function PlayerList({ WrapperElement="ol", InnerElement="li", players, ...props }) {
+export default function PlayerList({ playerData, currentPlayerIndex, changePlayerName, WrapperElement="ol", InnerElement="li",  ...props }) {
   return (
     <WrapperElement {...props}>
-      {Object.values(players).map((player) => (
-        <InnerElement key={player.index}>
-          <PlayerData player={player} />
+      {playerData.map((player, index) => (
+        <InnerElement className={currentPlayerIndex === index ? "active" : undefined} key={index}>
+          <PlayerData playerData={playerData} index={index} changePlayerName={changePlayerName} />
         </InnerElement>
       ))}
     </WrapperElement>

@@ -1,24 +1,23 @@
 import { useState } from "react";
 
-export default function PlayerData({ player }) {
+export default function PlayerData({ index, playerData, changePlayerName }) {
     const [isEditing, setIsEditing] = useState(false);
-    const [playerName, setPlayerName] = useState(player.name);
     let editableName = isEditing ? (
         <input
             type="text"
-            onChange={(e) => (setPlayerName(e.target.value))}
-            required value={playerName}
+            onChange={(e) => (changePlayerName(index, e.target.value))}
+            required value={playerData[index].name}
             autoFocus={true}
         />
-    ) : <span className="player-name">{playerName}</span>;
+    ) : <span className="player-name">{playerData[index].name}</span>;
 
-    let buttonText = isEditing ? "Save" : "Edit"
+    let buttonText = isEditing ? "Save" : "Edit";
 
     return (
         <>
             <span className="player">
                 {editableName}
-                <span className="player-symbol">{player.symbol}</span>
+                <span className="player-symbol">{playerData[index].symbol}</span>
             </span>
             <button onClick={() => setIsEditing((prev) => !prev)}>
                 {buttonText}

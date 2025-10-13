@@ -12,7 +12,7 @@ function checkLongestSequenceAllDirections(b) {
         { dr: 1, dc: 1 },   // Diagonal /
         { dr: 1, dc: -1 }   // Diagonal \
     ];
-    const symbols = [PLAYERS.player1.symbol, PLAYERS.player2.symbol];
+    const symbols = PLAYERS.map(player => player.symbol);
     for (let symbol of symbols) {
         for (let r = 0; r < boardSize; r++) {
             for (let c = 0; c < boardSize; c++) {
@@ -32,6 +32,7 @@ function checkLongestSequenceAllDirections(b) {
             }
         }
     }
+    console.log(maxSequence);
     return maxSequence;
 }
 
@@ -45,16 +46,10 @@ function checkWinner(b) {
     return false;
 }
 
-export default function GameBoard() {
+export default function GameBoard({ changePlayer, currentPlayer, currentPlayerIndex }) {
     const [boardSize, setBoardSize] = useState(3); // Default board size is 3x3
     const emptyBoard = Array(boardSize).fill(Array(boardSize).fill(null));
     const [board, setBoard] = useState(emptyBoard); // Create 2D array for the board
-    const [currentPlayer, setCurrentPlayer] = useState(PLAYERS.player1); // Manage turns. Player 1 starts the first game.
-    
-    // Alternates state between players
-    function changePlayer() {
-        setCurrentPlayer(currentPlayer === PLAYERS.player1 ? PLAYERS.player2 : PLAYERS.player1);
-    }
     
     // Updates the board state immutably
     function updateBoard(r, c) {
@@ -99,7 +94,7 @@ export default function GameBoard() {
                 const newSize = Math.max(3, Math.min(8, parseInt(e.target.value) || 3));
                 setBoardSize(newSize); // Update state with new size
                 setBoard(Array(newSize).fill(Array(newSize).fill(null))); // Reset board
-                setCurrentPlayer(PLAYERS.player1); // Player 1 starts after board size change
+                setCurrentPlayerIndex(0); // Player 1 starts after board size change
             }} />
             <ol id="game-board">
                 {board.map((row, rowIndex) => (
