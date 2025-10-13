@@ -46,7 +46,7 @@ function checkWinner(b) {
     return false;
 }
 
-export default function GameBoard({ changePlayer, currentPlayer, currentPlayerIndex }) {
+export default function GameBoard({ changePlayer, currentPlayer, setCurrentPlayerIndex }) {
     const [boardSize, setBoardSize] = useState(3); // Default board size is 3x3
     const emptyBoard = Array(boardSize).fill(Array(boardSize).fill(null));
     const [board, setBoard] = useState(emptyBoard); // Create 2D array for the board

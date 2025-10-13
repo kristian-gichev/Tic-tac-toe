@@ -33,7 +33,7 @@ export default function App() {
           <GameBoard 
           changePlayer={changePlayer} 
           currentPlayer={currentPlayer}
-          currentPlayerIndex={currentPlayerIndex}></GameBoard>
+          setCurrentPlayerIndex={setCurrentPlayerIndex}></GameBoard>
         </div>
       </main>
       Move list
