@@ -2,14 +2,21 @@ import { useState } from "react";
 
 export default function PlayerData({ index, playerData, changePlayerName }) {
     const [isEditing, setIsEditing] = useState(false);
+    const [playerName, setPlayerName] = useState(playerData[index].name)
+
+    function handleEditClick(){
+        setIsEditing((prev) => !prev);
+        changePlayerName(index, playerName);
+    }
+
     let editableName = isEditing ? (
         <input
             type="text"
-            onChange={(e) => (changePlayerName(index, e.target.value))}
-            required value={playerData[index].name}
+            onChange={(e) => (setPlayerName(e.target.value))}
+            required value={playerName}
             autoFocus={true}
         />
-    ) : <span className="player-name">{playerData[index].name}</span>;
+    ) : <span className="player-name">{playerName}</span>;
 
     let buttonText = isEditing ? "Save" : "Edit";
 
@@ -19,7 +26,7 @@ export default function PlayerData({ index, playerData, changePlayerName }) {
                 {editableName}
                 <span className="player-symbol">{playerData[index].symbol}</span>
             </span>
-            <button onClick={() => setIsEditing((prev) => !prev)}>
+            <button onClick={handleEditClick}>
                 {buttonText}
             </button>
         </>
