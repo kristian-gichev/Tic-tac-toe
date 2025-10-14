@@ -46,7 +46,7 @@ function checkWinner(b) {
 }
 
 
-export default function GameBoard({ playerData, turnLog, addTurn, resetTurnLog, getCurrentPlayerIndex }) {
+export default function GameBoard({ playerData, turnLog, addTurn, undoTurn, resetTurnLog, getCurrentPlayerIndex }) {
     const [boardSize, setBoardSize] = useState(3); // Default board size is 3x3
     // const [board, setBoard] = useState(emptyBoard); // Create 2D array for the board
     
@@ -81,8 +81,10 @@ export default function GameBoard({ playerData, turnLog, addTurn, resetTurnLog, 
         }
 
         // Compute the new board state
-        addTurn(rowIndex, colIndex, turnLog);
+        addTurn(rowIndex, colIndex);
     }
+
+    
 
     return (
         <>
@@ -101,6 +103,7 @@ export default function GameBoard({ playerData, turnLog, addTurn, resetTurnLog, 
                     </ol>
                 ))}
             </ol>
+            <button id="undo-button" onClick={(turnLog) => undoTurn(turnLog)}>Undo turn</button>
         </>
     );
 }

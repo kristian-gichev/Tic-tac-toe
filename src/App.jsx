@@ -8,7 +8,7 @@ export default function App() {
   const [turnLog, setTurnLog] = useState([]); // turnLog = [{playerIndex: 0-1, cell:{r: 0-2, c: 0-2}}]
   const [playerData, setPlayerData] = useState(PLAYERS);
 
-  function addTurn(rowIndex, colIndex, turnLog){
+  function addTurn(rowIndex, colIndex){
     setTurnLog((prevLog) => {
       const cell = {rowIndex: rowIndex, colIndex: colIndex};
       let playerIndex = 0;
@@ -22,6 +22,16 @@ export default function App() {
     })
   }
 
+  function undoTurn(turnLog){
+    setTurnLog((prevLog) => {
+      return prevLog.slice(1)
+    })
+  }
+
+  function resetTurnLog(){
+    setTurnLog([])
+  }
+
   function getCurrentPlayerIndex(turnLog){
     if (turnLog[-1]){
       return turnLog[-1].playerIndex ? 1 : 0
@@ -29,9 +39,7 @@ export default function App() {
     else return 0
   }
 
-  function resetTurnLog(){
-    setTurnLog([])
-  }
+
 
   function changePlayerName(index, newName){
     function newData(prevData){
@@ -47,21 +55,22 @@ export default function App() {
       <main>
         <div id="game-container">
           <PlayerList id="players" className="highlight-player"
-           playerData={playerData}
-           turnLog={turnLog}
-           getCurrentPlayerIndex={getCurrentPlayerIndex}
-           changePlayerName={changePlayerName}></PlayerList>
+            playerData={playerData}
+            turnLog={turnLog}
+            getCurrentPlayerIndex={getCurrentPlayerIndex}
+            changePlayerName={changePlayerName}></PlayerList>
           <GameBoard 
-          playerData={playerData}
-          turnLog={turnLog}
-          addTurn={addTurn}
-          resetTurnLog={resetTurnLog}
-          getCurrentPlayerIndex={getCurrentPlayerIndex}></GameBoard>
+            playerData={playerData}
+            turnLog={turnLog}
+            addTurn={addTurn}
+            undoTurn={undoTurn}
+            resetTurnLog={resetTurnLog}
+            getCurrentPlayerIndex={getCurrentPlayerIndex}></GameBoard>
         </div>
       </main>
       <Log 
-      turnLog={turnLog}
-      playerData={playerData}></Log>
+        turnLog={turnLog}
+        playerData={playerData}></Log>
     </>
   )
 };
