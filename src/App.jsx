@@ -1,17 +1,37 @@
 import { useState } from "react";
 import PlayerList from "./components/PlayerList";
 import GameBoard from "./components/GameBoard";
+import Log from "./components/Log"
 import { PLAYERS } from "./data";
 
 export default function App() {
-  const [currentPlayerIndex, setCurrentPlayerIndex] = useState(1); // Manage turns. Player 1 starts the first game.
+  const [turnLog, setTurnLog] = useState([]); // turnLog = [{playerIndex: 0-1, cell:{r: 0-2, c: 0-2}}]
   const [playerData, setPlayerData] = useState(PLAYERS);
-  const currentPlayer = playerData[currentPlayerIndex];
 
-  // Alternates state between players
-  function changePlayer() {
-    setCurrentPlayerIndex((currentPlayerIndex) => currentPlayerIndex === 0 ? 1 : 0);
-  };
+  function addTurn(rowIndex, colIndex, turnLog){
+    setTurnLog((prevLog) => {
+      const cell = {rowIndex: rowIndex, colIndex: colIndex};
+      let playerIndex = 0;
+      const lastTurn = prevLog[0];
+      if (lastTurn){
+        playerIndex = lastTurn.playerIndex ? 0 : 1
+      }
+      const newTurn = {playerIndex: playerIndex, cell: cell};
+      const newLog = [newTurn, ...prevLog];
+      return newLog;
+    })
+  }
+
+  function getCurrentPlayerIndex(turnLog){
+    if (turnLog[-1]){
+      return turnLog[-1].playerIndex ? 1 : 0
+    }
+    else return 0
+  }
+
+  function resetTurnLog(){
+    setTurnLog([])
+  }
 
   function changePlayerName(index, newName){
     function newData(prevData){
@@ -28,15 +48,20 @@ export default function App() {
         <div id="game-container">
           <PlayerList id="players" className="highlight-player"
            playerData={playerData}
-           currentPlayerIndex={currentPlayerIndex}
+           turnLog={turnLog}
+           getCurrentPlayerIndex={getCurrentPlayerIndex}
            changePlayerName={changePlayerName}></PlayerList>
           <GameBoard 
-          changePlayer={changePlayer} 
-          currentPlayer={currentPlayer}
-          setCurrentPlayerIndex={setCurrentPlayerIndex}></GameBoard>
+          playerData={playerData}
+          turnLog={turnLog}
+          addTurn={addTurn}
+          resetTurnLog={resetTurnLog}
+          getCurrentPlayerIndex={getCurrentPlayerIndex}></GameBoard>
         </div>
       </main>
-      Move list
+      <Log 
+      turnLog={turnLog}
+      playerData={playerData}></Log>
     </>
   )
 };

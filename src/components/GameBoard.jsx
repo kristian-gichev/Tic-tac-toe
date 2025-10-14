@@ -32,7 +32,6 @@ function checkLongestSequenceAllDirections(b) {
             }
         }
     }
-    console.log(maxSequence);
     return maxSequence;
 }
 
@@ -46,45 +45,43 @@ function checkWinner(b) {
     return false;
 }
 
-export default function GameBoard({ changePlayer, currentPlayer, setCurrentPlayerIndex }) {
+
+export default function GameBoard({ playerData, turnLog, addTurn, resetTurnLog, getCurrentPlayerIndex }) {
     const [boardSize, setBoardSize] = useState(3); // Default board size is 3x3
-    const emptyBoard = Array(boardSize).fill(Array(boardSize).fill(null));
-    const [board, setBoard] = useState(emptyBoard); // Create 2D array for the board
+    // const [board, setBoard] = useState(emptyBoard); // Create 2D array for the board
     
-    // Updates the board state immutably
-    function updateBoard(r, c) {
-        const newBoard = board.map((row, rIdx) =>
-            row.map((cell, cIdx) => {
-                if (rIdx === r && cIdx === c) {
-                    return currentPlayer.symbol;
-                }
-                return cell;
-            })
-        );
-        setBoard(newBoard);
-        return newBoard;
+    function constructBoard(){
+        const board = Array(boardSize).fill(null);
+        board.forEach((a, i) =>{
+            board[i] = new Array(boardSize).fill(null)
+        })
+
+        turnLog.forEach((turn, index) => {
+            board[turn.cell.rowIndex][turn.cell.colIndex] = playerData[turn.playerIndex].symbol;
+        })
+
+        // Check for a winner
+        return board
     }
 
-    function handleCellClick(rowIndex, cellIndex) {
+    // Construct state (board position from turnLog)
+    const board = constructBoard(turnLog, boardSize, playerData);
+
+    function handleCellClick(rowIndex, colIndex, turnLog) {
         // Ignore clicks on occupied cells
-        if (board[rowIndex][cellIndex] !== null) {
+        if (board[rowIndex][colIndex] !== null) {
             alert("Cell already occupied");
+            return;
+        }
+        board[rowIndex][colIndex] = playerData[getCurrentPlayerIndex(turnLog)].symbol
+        if (checkWinner(board)) {
+            alert(`${playerData[getCurrentPlayerIndex(turnLog)].name} wins!`); // Announce the winner
+            resetTurnLog(); // Reset the board
             return;
         }
 
         // Compute the new board state
-        const newBoard = updateBoard(rowIndex, cellIndex);
-
-        // Check for a winner
-        if (checkWinner(newBoard)) {
-            alert(`${currentPlayer.name} wins!`); // Announce the winner
-            setBoard(emptyBoard); // Reset the board
-            changePlayer(); // Loser starts next game
-            return;
-        }
-
-        // Pass the turn to the other player
-        changePlayer(); 
+        addTurn(rowIndex, colIndex, turnLog);
     }
 
     return (
@@ -93,14 +90,13 @@ export default function GameBoard({ changePlayer, currentPlayer, setCurrentPlaye
             <input id="board-size-input"  type="number" min="3" max="8" value={boardSize} onChange={(e) => {
                 const newSize = Math.max(3, Math.min(8, parseInt(e.target.value) || 3));
                 setBoardSize(newSize); // Update state with new size
-                setBoard(Array(newSize).fill(Array(newSize).fill(null))); // Reset board
-                setCurrentPlayerIndex(0); // Player 1 starts after board size change
+                resetTurnLog(); // Reset board
             }} />
             <ol id="game-board">
                 {board.map((row, rowIndex) => (
                     <ol key={rowIndex} className="board-row">
                         {row.map((cell, cellIndex) => (
-                            <Cell key={cellIndex} value={cell} clickHandler={() => handleCellClick(rowIndex, cellIndex)} />
+                            <Cell key={cellIndex} value={cell} clickHandler={() => handleCellClick(rowIndex, cellIndex, turnLog)} />
                         ))}
                     </ol>
                 ))}
