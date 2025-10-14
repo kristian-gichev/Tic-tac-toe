@@ -2,11 +2,14 @@ import { useState } from "react";
 import PlayerList from "./components/PlayerList";
 import GameBoard from "./components/GameBoard";
 import Log from "./components/Log"
+import GameOver from "./components/GameOver";
+import checkWinner from "./components/GameBoard"
 import { PLAYERS } from "./data";
 
 export default function App() {
   const [turnLog, setTurnLog] = useState([]); // turnLog = [{playerIndex: 0-1, cell:{r: 0-2, c: 0-2}}]
   const [playerData, setPlayerData] = useState(PLAYERS);
+  const [winnerIndex, setWinnerIndex] = useState(null);
 
   function addTurn(rowIndex, colIndex) {
     setTurnLog((prevLog) => {
@@ -29,7 +32,7 @@ export default function App() {
   }
 
   function resetTurnLog() {
-    setTurnLog([])
+    setTurnLog([]);
   }
 
   function deriveCurrentPlayerIndex(turnLog) {
@@ -65,7 +68,17 @@ export default function App() {
             addTurn={addTurn}
             undoTurn={undoTurn}
             resetTurnLog={resetTurnLog}
+            setWinnerIndex={setWinnerIndex}
             deriveCurrentPlayerIndex={deriveCurrentPlayerIndex}></GameBoard>
+          {console.log(winnerIndex)}
+          {winnerIndex!==null ? 
+          <GameOver
+          setWinnerIndex={setWinnerIndex}
+          resetTurnLog={resetTurnLog}
+          playerData={playerData}
+          winnerIndex={winnerIndex}
+          turnLog={turnLog}
+          ></GameOver> : undefined }
         </div>
       </main>
       <Log

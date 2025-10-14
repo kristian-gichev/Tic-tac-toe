@@ -35,7 +35,7 @@ function checkLongestSequenceAllDirections(b) {
     return maxSequence;
 }
 
-function checkWinner(b) {
+export function checkWinner(b) {
     const boardSize = b.length;
     const neededToWin = 3 + Math.floor((boardSize - 3) / 2);
 
@@ -46,9 +46,8 @@ function checkWinner(b) {
 }
 
 
-export default function GameBoard({ playerData, turnLog, addTurn, undoTurn, resetTurnLog, deriveCurrentPlayerIndex }) {
+export default function GameBoard({ setWinnerIndex, playerData, turnLog, addTurn, undoTurn, resetTurnLog, deriveCurrentPlayerIndex }) {
     const [boardSize, setBoardSize] = useState(3); // Default board size is 3x3
-    // const [board, setBoard] = useState(emptyBoard); // Create 2D array for the board
 
     function deriveBoard() {
         const board = Array(boardSize).fill(null);
@@ -68,24 +67,27 @@ export default function GameBoard({ playerData, turnLog, addTurn, undoTurn, rese
     const board = deriveBoard(turnLog, boardSize, playerData);
 
     function handleCellClick(rowIndex, colIndex, turnLog) {
+        // Schedule a compute of the new board state immutably
+        addTurn(rowIndex, colIndex);
+
+        // Alter board mutably instantly just to check for winner instantly
         board[rowIndex][colIndex] = playerData[deriveCurrentPlayerIndex(turnLog)].symbol
+        // Check winner
         if (checkWinner(board)) {
-            alert(`${playerData[deriveCurrentPlayerIndex(turnLog)].name} wins!`); // Announce the winner
-            resetTurnLog(); // Reset the board
+            setWinnerIndex(deriveCurrentPlayerIndex(turnLog))
             return;
         }
 
-        // Compute the new board state
-        addTurn(rowIndex, colIndex);
+        
     }
 
 
 
     return (
         <>
-            <label id="board-size-label" htmlFor="board-size-input">Board Size (3-8): </label>
-            <input id="board-size-input" type="number" min="3" max="8" value={boardSize} onChange={(e) => {
-                const newSize = Math.max(3, Math.min(8, parseInt(e.target.value) || 3));
+            <label id="board-size-label" htmlFor="board-size-input">Board Size (3-7): </label>
+            <input id="board-size-input" type="number" min="3" max="7" step="2" value={boardSize} onChange={(e) => {
+                const newSize = Math.max(3, Math.min(7, parseInt(e.target.value) || 3));
                 setBoardSize(newSize); // Update state with new size
                 resetTurnLog(); // Reset board
             }} />
