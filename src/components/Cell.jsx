@@ -1,4 +1,4 @@
 
 export default function Cell({value, clickHandler}){
-    return <button className="board-cell" onClick={clickHandler}>{value}</button>;
+    return <button disabled={value ? true : false} className="board-cell" onClick={clickHandler}>{value}</button>;
 }

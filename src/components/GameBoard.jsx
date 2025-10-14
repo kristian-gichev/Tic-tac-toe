@@ -68,11 +68,6 @@ export default function GameBoard({ playerData, turnLog, addTurn, undoTurn, rese
     const board = deriveBoard(turnLog, boardSize, playerData);
 
     function handleCellClick(rowIndex, colIndex, turnLog) {
-        // Ignore clicks on occupied cells
-        if (board[rowIndex][colIndex] !== null) {
-            alert("Cell already occupied");
-            return;
-        }
         board[rowIndex][colIndex] = playerData[deriveCurrentPlayerIndex(turnLog)].symbol
         if (checkWinner(board)) {
             alert(`${playerData[deriveCurrentPlayerIndex(turnLog)].name} wins!`); // Announce the winner
