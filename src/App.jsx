@@ -33,10 +33,12 @@ export default function App() {
   }
 
   function getCurrentPlayerIndex(turnLog){
-    if (turnLog[-1]){
-      return turnLog[-1].playerIndex ? 1 : 0
+    let playerIndex = 0;
+    const lastTurn = turnLog[0];
+    if (lastTurn){
+      playerIndex = lastTurn.playerIndex ? 0 : 1
     }
-    else return 0
+    return playerIndex
   }
 
 
