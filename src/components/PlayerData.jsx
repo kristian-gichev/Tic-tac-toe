@@ -6,7 +6,9 @@ export default function PlayerData({ index, playerData, changePlayerName }) {
 
     function handleEditClick(){
         setIsEditing((prev) => !prev);
-        changePlayerName(index, playerName);
+        if (isEditing){
+            changePlayerName(index, playerName);
+        }
     }
 
     let editableName = isEditing ? (
