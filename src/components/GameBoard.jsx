@@ -1,8 +1,10 @@
+import {StateContext} from "../store/state-context";
 import Cell from "./Cell";
+import { use } from "react"
 
 
-export default function GameBoard({ boardSize, setBoardSize, board, addTurn, undoTurn, resetTurnLog }) {
-
+export default function GameBoard() {
+    const {boardSize, setBoardSize, board, addTurn, resetTurnLog, undoTurn} = use(StateContext);
     function handleCellClick(rowIndex, colIndex) {
         // Schedule a compute of the new board state immutably
         addTurn(rowIndex, colIndex);
@@ -25,7 +27,7 @@ export default function GameBoard({ boardSize, setBoardSize, board, addTurn, und
                     </ol>
                 ))}
             </ol>
-            <button id="undo-button" onClick={(turnLog) => undoTurn(turnLog)}>Undo turn</button>
+            <button id="undo-button" onClick={() => undoTurn()}>Undo turn</button>
         </>
     );
 }

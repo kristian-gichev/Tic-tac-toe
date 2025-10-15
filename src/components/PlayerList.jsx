@@ -1,12 +1,15 @@
+import {StateContext} from "../store/state-context";
 import PlayerData from "./PlayerData";
+import {use} from "react";
 
-export default function PlayerList({ playerData, currentPlayerIndex, changePlayerName, WrapperElement = "ol", InnerElement = "li", ...props }) {
+export default function PlayerList({ WrapperElement = "ol", InnerElement = "li", ...props }) {
+  const { playerData, currentPlayerIndex } = use(StateContext)
   return (
     <WrapperElement {...props}>
       {playerData.map((player, index) => {
         return (
           <InnerElement className={currentPlayerIndex === index ? "active" : undefined} key={index}>
-            <PlayerData playerData={playerData} index={index} changePlayerName={changePlayerName} />
+            <PlayerData index={index}/>
           </InnerElement>)
       })}
     </WrapperElement>

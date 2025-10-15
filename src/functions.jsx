@@ -29,7 +29,6 @@ export function deriveBoard(turnLog, boardSize, playerData) {
     })
 
     turnLog.forEach((turn, index) => {
-        console.log(turn);
         board[turn.cell.rowIndex][turn.cell.colIndex] = playerData[turn.playerIndex].symbol;
     })
 
