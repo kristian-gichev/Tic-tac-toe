@@ -1,4 +1,4 @@
-import { useState, createContext } from "react"
+import { useState, useReducer, createContext } from "react"
 import { PLAYERS } from "../data.js"
 import { deriveBoard, deriveCurrentPlayerIndex, deriveWinner } from "../functions";
 
@@ -25,6 +25,7 @@ export function StateContextProvider({ children }) {
     const [turnLog, setTurnLog] = useState([]); // turnLog = [{playerIndex: 0-1, cell:{r: 0-2, c: 0-2}}]
     const [playerData, setPlayerData] = useState(PLAYERS);
     const [boardSize, setBoardSize] = useState(3); // Default board size is 3x3
+
 
     // State management funtions
     function addTurn(rowIndex, colIndex) {
@@ -60,6 +61,7 @@ export function StateContextProvider({ children }) {
         setPlayerData((prevData) => newData(prevData));
     };
 
+    // Event handler functions
     function handleRestart() {
         resetTurnLog();
     }
