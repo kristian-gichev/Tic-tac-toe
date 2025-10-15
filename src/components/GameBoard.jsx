@@ -1,6 +1,6 @@
-import { useState } from "react";
 import Cell from "./Cell";
 import { PLAYERS } from "../data";
+import { deriveCurrentPlayerIndex } from "../App";
 
 function checkLongestSequenceAllDirections(b) {
     const boardSize = b.length;
@@ -35,50 +35,51 @@ function checkLongestSequenceAllDirections(b) {
     return maxSequence;
 }
 
-export function checkWinner(b) {
+export function getWinner(b, turnLog) {
     const boardSize = b.length;
     const neededToWin = 3 + Math.floor((boardSize - 3) / 2);
 
     if (checkLongestSequenceAllDirections(b) >= neededToWin) {
-        return true;
+        return deriveCurrentPlayerIndex(turnLog.slice(1));
     }
-    return false;
+    if (b.forEach((r) => r.forEach((c) => c !== null))){
+        return -1
+    }
+    return null;
 }
 
-
-export default function GameBoard({ setWinnerIndex, playerData, turnLog, addTurn, undoTurn, resetTurnLog, deriveCurrentPlayerIndex }) {
-    const [boardSize, setBoardSize] = useState(3); // Default board size is 3x3
-
-    function deriveBoard() {
+export function deriveBoard(turnLog, boardSize, playerData) {
         const board = Array(boardSize).fill(null);
         board.forEach((a, i) => {
             board[i] = new Array(boardSize).fill(null)
         })
 
         turnLog.forEach((turn, index) => {
+            console.log(turn);
             board[turn.cell.rowIndex][turn.cell.colIndex] = playerData[turn.playerIndex].symbol;
         })
 
-        // Check for a winner
         return board
     }
+
+
+export default function GameBoard({ boardSize, setBoardSize, setWinnerIndex, playerData, deriveCurrentPlayerIndex, turnLog, addTurn, undoTurn, resetTurnLog }) {
 
     // Construct state (board position from turnLog)
     const board = deriveBoard(turnLog, boardSize, playerData);
 
-    function handleCellClick(rowIndex, colIndex, turnLog) {
+    function handleCellClick(rowIndex, colIndex) {
         // Schedule a compute of the new board state immutably
         addTurn(rowIndex, colIndex);
 
         // Alter board mutably instantly just to check for winner instantly
-        board[rowIndex][colIndex] = playerData[deriveCurrentPlayerIndex(turnLog)].symbol
-        // Check winner
-        if (checkWinner(board)) {
-            setWinnerIndex(deriveCurrentPlayerIndex(turnLog))
-            return;
-        }
+        // board[rowIndex][colIndex] = playerData[deriveCurrentPlayerIndex(turnLog)].symbol
 
-        
+        // Check winner
+        // if (checkWinner(deriveBoard(turnLog))) {
+        //     setWinnerIndex(deriveCurrentPlayerIndex(turnLog))
+        //     return;
+        // }
     }
 
 
@@ -95,7 +96,7 @@ export default function GameBoard({ setWinnerIndex, playerData, turnLog, addTurn
                 {board.map((row, rowIndex) => (
                     <ol key={rowIndex} className="board-row">
                         {row.map((cell, cellIndex) => (
-                            <Cell key={cellIndex} value={cell} clickHandler={() => handleCellClick(rowIndex, cellIndex, turnLog)} />
+                            <Cell key={cellIndex} value={cell} clickHandler={() => handleCellClick(rowIndex, cellIndex)} />
                         ))}
                     </ol>
                 ))}
